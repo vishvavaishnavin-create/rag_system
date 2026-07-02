@@ -1,75 +1,56 @@
-# ── Environment & Secrets ──────────────────
+# Secrets
 .env
 .env.*
-*.env
 !.env.example
 
-# ── Python ─────────────────────────────────
+# Python
 venv/
 .venv/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.pyo
 *.egg-info/
 dist/
 build/
-.Python
-pip-log.txt
 
-# ── Database & User Data ───────────────────
+# Databases
 users.db
 *.db
 *.sqlite
-*.sqlite3
 chroma_db/
+
+# User data
 history/
 user_topics/
 chat_history.json
 
-# ── SSL Certificates ───────────────────────
+# SSL certificates
 *.pem
 *.crt
 *.key
-ca.pem
 
-# ── Node / Frontend ────────────────────────
+# Node
 node_modules/
-dist/
-build/
 .next/
 npm-debug.log*
-yarn-error.log*
-package-lock.json
 
-# ── Mac OS ─────────────────────────────────
+# Mac
 .DS_Store
-.AppleDouble
-.LSOverride
 ._*
+.AppleDouble
 
-# ── IDE ────────────────────────────────────
+# IDE / AI tools
 .vscode/
+.claude/
+.cursor/
 .idea/
-*.code-workspace
 
-# ── Logs & temp ────────────────────────────
+# Logs
 *.log
 logs/
 *.tmp
 tmp/
-temp/
 
-# ── Python cache ───────────────────────────
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-htmlcov/
-.coverage
-
-# ── AI Assistant Files ─────────────────────
-.claude/
-.cursor/
-.copilot/
-.aider/
+# Uploads
+uploads/
