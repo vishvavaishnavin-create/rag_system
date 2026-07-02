@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip3 install *)",
+      "Bash(python3 -c ' *)",
+      "Bash(rm ~/rag_system/chat_history.json && echo \"deleted\")"
+    ],
+    "additionalDirectories": [
+      "/Users/vishva/rag_system"
+    ]
+  }
+}

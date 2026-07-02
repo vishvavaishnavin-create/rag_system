@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+.chat-scroll {
+  scroll-behavior: smooth;
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes typingDot {
+  0%, 60%, 100% { transform: translateY(0);   opacity: 0.4; }
+  30%            { transform: translateY(-8px); opacity: 1;   }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0);   }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX( 6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX( 4px); }
+}
+
+@keyframes ripple {
+  0%   { transform: scale(1);   opacity: 0.5; }
+  100% { transform: scale(2.4); opacity: 0;   }
+}
+
+@keyframes toastIn {
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes toastOut {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(110%); opacity: 0; }
+}
+
+@keyframes progressShrink {
+  from { width: 100%; }
+  to   { width: 0%;   }
+}
+
+@keyframes checkBounce {
+  0%   { transform: scale(0); }
+  60%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+/* ── Utility classes ─────────────────────────────────────────────────────────── */
+
+.animate-fadeIn       { animation: fadeIn      0.4s ease         forwards; }
+.animate-fadeInLeft   { animation: fadeInLeft  0.4s ease         forwards; }
+.animate-fadeInRight  { animation: fadeInRight 0.4s ease         forwards; }
+.animate-slideDown    { animation: slideDown   0.3s ease         forwards; }
+.animate-scaleIn      { animation: scaleIn     0.3s ease         forwards; }
+.animate-float        { animation: float       3s  ease-in-out   infinite; }
+.animate-shake        { animation: shake       0.4s ease; }
+.animate-checkBounce  { animation: checkBounce 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.animate-ripple       { animation: ripple      1s  ease-out      infinite; }
+.animate-toast-in     { animation: toastIn     0.3s cubic-bezier(0.4,0,0.2,1) forwards; }
+.animate-toast-out    { animation: toastOut    0.3s cubic-bezier(0.4,0,0.2,1) forwards; }
+.animate-progress     { animation: progressShrink 3s linear      forwards; }
+.animate-typing-dot   { animation: typingDot   1.4s ease-in-out  infinite; }
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* Stagger helpers */
+.stagger-children > *:nth-child(1) { animation-delay: 0ms;   animation-fill-mode: both; }
+.stagger-children > *:nth-child(2) { animation-delay: 75ms;  animation-fill-mode: both; }
+.stagger-children > *:nth-child(3) { animation-delay: 150ms; animation-fill-mode: both; }
+.stagger-children > *:nth-child(4) { animation-delay: 225ms; animation-fill-mode: both; }
+
+/* Input focus glow */
+.input-glow {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.input-glow:focus {
+  border-color: rgb(99, 102, 241) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  transform: scale(1.005);
+  outline: none;
+}
+
+/* Button press micro-interaction */
+.btn-press {
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-press:hover  { transform: scale(1.02); filter: brightness(1.1); }
+.btn-press:active { transform: scale(0.97); filter: brightness(0.95); }
+
+/* Card hover lift */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Transition smooth */
+.transition-smooth {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

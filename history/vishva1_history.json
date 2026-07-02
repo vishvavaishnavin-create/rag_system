@@ -1,0 +1,38 @@
+[
+  {
+    "id": "d80dba00-4f5f-42b0-bf4b-88a031dc54fa",
+    "role": "user",
+    "content": "hi",
+    "timestamp": "2026-07-01T05:29:37.945121+00:00"
+  },
+  {
+    "id": "a95d996b-b449-4f86-bb71-98b6ca5ace0b",
+    "role": "assistant",
+    "content": "Hello! How can I help you today? \n\nPlease note that the provided context is extremely limited (mentioning \"History before 1980\" and a 2015 arXiv preprint on neural machine translation), but I am here to answer any questions you have based strictly on that information.",
+    "timestamp": "2026-07-01T05:29:37.945121+00:00"
+  },
+  {
+    "id": "e076076b-17d6-45f5-a98b-0423a7455b04",
+    "role": "user",
+    "content": "what can you do?",
+    "timestamp": "2026-07-01T05:30:11.876835+00:00"
+  },
+  {
+    "id": "59e613e9-a7cd-4249-b23f-6f84391bcc6c",
+    "role": "assistant",
+    "content": "Based on the provided context, there is not enough information to determine what I can do. The context only contains a fragment of text about evaluating situations under uncertainty, the word \"History,\" and an excerpt from an academic paper introduction proposing the \"Transformer\" network architecture.",
+    "timestamp": "2026-07-01T05:30:11.876835+00:00"
+  },
+  {
+    "id": "0d72cde0-4223-49e3-9354-8614ef31ce16",
+    "role": "user",
+    "content": "what is artificial intelligence?",
+    "timestamp": "2026-07-01T05:30:36.684867+00:00"
+  },
+  {
+    "id": "8acf4fd0-6f97-4d1b-9f75-70f0f1c1c531",
+    "role": "assistant",
+    "content": "Based on the provided context, artificial intelligence (AI) is the capability of computational systems to perform tasks typically associated with human intelligence, such as learning, reasoning, problem-solving, perception, and decision-making. \n\nIt is also defined as a field of research in engineering, mathematics, and computer science that develops and studies methods and software that enable machines to perceive their environment and use learning and intelligence to take actions that maximize their chances of achieving defined goals.",
+    "timestamp": "2026-07-01T05:30:36.684867+00:00"
+  }
+]

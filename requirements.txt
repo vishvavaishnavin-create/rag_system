@@ -1,0 +1,11 @@
+langchain
+langchain-community
+langchain-google-genai
+langchain-huggingface
+langchain-chroma
+chromadb
+sentence-transformers
+wikipedia
+google-generativeai
+python-dotenv
+tiktoken

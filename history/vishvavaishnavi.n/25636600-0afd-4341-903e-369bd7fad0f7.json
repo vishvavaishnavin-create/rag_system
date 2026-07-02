@@ -1,0 +1,20 @@
+{
+  "session_id": "25636600-0afd-4341-903e-369bd7fad0f7",
+  "title": "Tell me about computer science",
+  "created_at": "2026-07-01T13:13:30.236430+00:00",
+  "updated_at": "2026-07-01T13:14:06.477842+00:00",
+  "messages": [
+    {
+      "id": "fe8d723e-2de8-4225-abde-e08c4c465399",
+      "role": "user",
+      "content": "Tell me about computer science",
+      "timestamp": "2026-07-01T13:14:06.476990+00:00"
+    },
+    {
+      "id": "e9864f5d-3c54-4661-80f4-afa718d65592",
+      "role": "assistant",
+      "content": "Based on the provided context, here is an overview of computer science:\n\n* **Definition:** Computer science is the study of computation, information, and automation. An expert in this field is known as a computer scientist.\n* **Scope:** It is broadly included in the sciences and spans both theoretical disciplines (such as algorithms, theory of computation, and information theory) and applied disciplines (including the design and implementation of hardware and software).\n* **Interdisciplinary Connections:** Computer science research frequently intersects with other fields, including cognitive science, linguistics, mathematics, physics, biology, Earth science, statistics, philosophy, and logic. There is also an exchange of ideas between computer science and information technology (or information systems).\n* **Theoretical Computer Science:** This area is mathematical and abstract in spirit, but motivated by practical, everyday computation. Its goal is to understand the nature of computation to provide more efficient methodologies.\n* **Relationship with Software Engineering:** The relationship between the two fields is contentious. According to David Parnas, the principal focus of computer science is studying the properties of computation in general (in contrast to software engineering, which focuses on design).",
+      "timestamp": "2026-07-01T13:14:06.477831+00:00"
+    }
+  ]
+}

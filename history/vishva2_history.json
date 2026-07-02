@@ -1,0 +1,14 @@
+[
+  {
+    "id": "a688df3a-f43a-4a43-b6af-5b1d09c24c42",
+    "role": "user",
+    "content": "what is machine learning?",
+    "timestamp": "2026-07-01T05:31:57.110250+00:00"
+  },
+  {
+    "id": "a54525ad-dd77-4045-a625-d2c65174ce70",
+    "role": "assistant",
+    "content": "Based on the provided context, machine learning (ML) is defined in a few ways:\n\n1. **General definition:** It is the study of computer programs that can automatically improve their performance on a given task.\n2. **AI field definition:** It is a field of study in artificial intelligence focused on the development and study of statistical algorithms that can learn from data and generalize to unseen data, allowing them to perform tasks without being explicitly programmed.\n3. **Formal definition (by Tom M. Mitchell):** \"A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P if its performance at tasks in T, as measured by P, improves with experience E.\"",
+    "timestamp": "2026-07-01T05:31:57.110250+00:00"
+  }
+]
