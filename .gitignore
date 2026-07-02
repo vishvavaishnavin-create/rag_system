@@ -71,3 +71,4 @@ uploads/
 .ruff_cache/
 htmlcov/
 .coverage
+.claude/
