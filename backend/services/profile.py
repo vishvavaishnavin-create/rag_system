@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from repository import auth as auth_repo
 from utils import password as pwd_utils
 
-os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "history")
+HISTORY_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "history")
 
 _TOPICS = [
     "AI", "Machine Learning", "Deep Learning", "NLP", "Neural Networks",

@@ -3,7 +3,7 @@
 import json
 import os
 
-os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "user_topics")
+_USER_TOPICS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "user_topics")
 os.makedirs(_USER_TOPICS_DIR, exist_ok=True)
 
 

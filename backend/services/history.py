@@ -9,7 +9,8 @@ import shutil
 import uuid
 from datetime import datetime, timezone
 
-os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "history")
+HISTORY_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "history")
+os.makedirs(HISTORY_DIR, exist_ok=True)
 
 
 def _user_dir(username: str) -> str:

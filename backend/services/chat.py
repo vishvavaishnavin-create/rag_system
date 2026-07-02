@@ -4,7 +4,6 @@ Call initialize() once at startup; all other functions reuse the loaded state.
 """
 
 import os
-import sys
 
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
@@ -13,12 +12,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 from app_config import settings
 from utils.embeddings import get_embedding_model
-
-RAG_SYSTEM_PATH = os.path.expanduser(settings.rag_system_path)
-sys.path.insert(0, RAG_SYSTEM_PATH)
-os.chdir(RAG_SYSTEM_PATH)
-
-from rag_pipeline import build_rag_chain  # noqa: E402
+from rag_pipeline import build_rag_chain
 
 _rag_chain = None
 _llm: ChatGoogleGenerativeAI | None = None
@@ -43,7 +37,6 @@ Answer:"""
 
 def initialize() -> None:
     global _rag_chain, _llm
-    os.chdir(RAG_SYSTEM_PATH)
     print("Loading HuggingFace embedding model...")
     get_embedding_model()
     print("Embedding model ready.")

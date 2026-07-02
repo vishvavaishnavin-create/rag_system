@@ -13,7 +13,7 @@ from repository import auth as auth_repo
 from services import chat as chat_svc
 from services import history as history_svc
 
-os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "history")
+_HISTORY_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "history")
 
 
 def _count_sessions_and_messages(username: str) -> tuple[int, int]:

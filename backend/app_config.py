@@ -41,6 +41,6 @@ class Settings(BaseSettings):
     use_chroma_cloud: bool = False
 
     class Config:
-        env_file = os.path.expanduser("~/rag_system/.env")
+        env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 
 settings = Settings()

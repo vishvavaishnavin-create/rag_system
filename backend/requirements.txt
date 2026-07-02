@@ -8,6 +8,7 @@ python-multipart
 sqlalchemy
 python-jose[cryptography]
 passlib[bcrypt]
+bcrypt
 httpx
 psycopg2-binary
 langchain
