@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-3.5-flash"
 
     # RAG
-    rag_system_path: str = os.path.expanduser("~/rag_system")
+    rag_system_path: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     chroma_db_dir: str = "./chroma_db"
     collection_name: str = "wikipedia_rag"
     embedding_model: str = "all-MiniLM-L6-v2"

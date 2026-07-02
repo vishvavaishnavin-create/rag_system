@@ -3,7 +3,7 @@
 import json
 import os
 
-_USER_TOPICS_DIR = os.path.expanduser("~/rag_system/user_topics")
+os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "user_topics")
 os.makedirs(_USER_TOPICS_DIR, exist_ok=True)
 
 

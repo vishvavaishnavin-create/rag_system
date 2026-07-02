@@ -8,7 +8,7 @@ import sys
 from routes import admin, auth, chat, documents, history, profile
 # sys.path must be configured before any local imports
 BACKEND_PATH = os.path.dirname(os.path.abspath(__file__))
-RAG_SYSTEM_PATH = os.path.expanduser("~/rag_system")
+RAG_SYSTEM_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BACKEND_PATH)
 sys.path.insert(1, RAG_SYSTEM_PATH)
 os.chdir(RAG_SYSTEM_PATH)

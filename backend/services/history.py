@@ -9,7 +9,7 @@ import shutil
 import uuid
 from datetime import datetime, timezone
 
-HISTORY_DIR = os.path.expanduser("~/rag_system/history")
+os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "history")
 
 
 def _user_dir(username: str) -> str:

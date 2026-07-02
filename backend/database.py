@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 
-load_dotenv(os.path.expanduser("~/rag_system/.env"))
+load_dotenv()
 
 from sqlalchemy import (
     Boolean, Column, DateTime, Integer,
