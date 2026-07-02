@@ -10,3 +10,13 @@ python-jose[cryptography]
 passlib[bcrypt]
 httpx
 psycopg2-binary
+langchain
+langchain-google-genai
+langchain-huggingface
+langchain-chroma
+langchain-community
+langchain-core
+langchain-text-splitters
+chromadb
+sentence-transformers
+onnxruntime
