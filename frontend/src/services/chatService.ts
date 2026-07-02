@@ -1,6 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL || "${API_URL}"
 import type { AskRequest, AskResponse } from '../types/chat';
 
-const BASE = 'http://localhost:8000';
+const BASE = '${API_URL}';
 
 export async function askQuestion(req: AskRequest, token: string): Promise<AskResponse> {
   const res = await fetch(`${BASE}/chat/ask`, {

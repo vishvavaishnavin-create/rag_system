@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || "${API_URL}"
 import type {
   AdminActivityResponse,
   AdminPDFsResponse,
@@ -5,7 +6,7 @@ import type {
   AdminUsersResponse,
 } from '../types/admin';
 
-const BASE = 'http://localhost:8000';
+const BASE = '${API_URL}';
 
 function authHeaders(token: string) {
   return { Authorization: `Bearer ${token}` };

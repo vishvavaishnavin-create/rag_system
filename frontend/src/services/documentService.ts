@@ -1,6 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL || "${API_URL}"
 import type { DocumentsResponse, UploadResponse } from '../types/document';
 
-const BASE = 'http://localhost:8000';
+const BASE = '${API_URL}';
 
 export async function uploadPDF(file: File, token: string): Promise<UploadResponse> {
   const form = new FormData();
