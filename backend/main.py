@@ -5,8 +5,7 @@ Business logic lives in services/; HTTP handling lives in routes/.
 import os
 import sys
 
-from backend.routes import admin, auth, chat, documents, history, profile
-
+from routes import admin, auth, chat, documents, history, profile
 # sys.path must be configured before any local imports
 BACKEND_PATH = os.path.dirname(os.path.abspath(__file__))
 RAG_SYSTEM_PATH = os.path.expanduser("~/rag_system")
@@ -19,10 +18,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.database import SessionLocal, create_tables
-from backend.routes import topics
-from backend.services import chat as chat_svc
-from backend.services.auth import create_admin_if_not_exists
+from database import SessionLocal, create_tables
+from routes import topics
+from services import chat as chat_svc
+from services.auth import create_admin_if_not_exists
 
 
 @asynccontextmanager
