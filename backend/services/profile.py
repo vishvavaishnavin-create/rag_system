@@ -6,7 +6,7 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 
-from repository import user_repository
+from repository import auth as auth_repo
 from utils import password as pwd_utils
 
 HISTORY_DIR = os.path.expanduser("~/rag_system/history")
@@ -122,9 +122,9 @@ def get_top_topics(username: str) -> list[dict]:
 
 
 def change_password(db, username: str, old_password: str, new_password: str) -> None:
-    user = user_repository.find_by_username(db, username)
+    user = auth_repo.find_by_username(db, username)
     if not user:
         raise ValueError("User not found.")
     if not pwd_utils.verify_password(old_password, user.hashed_password):
         raise ValueError("Current password is incorrect.")
-    user_repository.update_password(db, user.id, pwd_utils.hash_password(new_password))
+    auth_repo.update_password(db, user.id, pwd_utils.hash_password(new_password))

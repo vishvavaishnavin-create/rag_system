@@ -3,17 +3,13 @@ Topics routes — list, add, and remove Wikipedia knowledge topics.
 """
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
 
 from database import User
+from models.topics import AddTopicRequest
 from services import topics as topics_svc
 from services.auth import get_current_user
 
 router = APIRouter(prefix="/topics", tags=["topics"])
-
-
-class AddTopicRequest(BaseModel):
-    topic: str
 
 
 @router.get("/available")

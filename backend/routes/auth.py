@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app_config import settings
 from database import User, get_db
 from models.auth import LoginRequest, RegisterRequest, TokenResponse, UserResponse
-from repository import user_repository
+from repository import auth as auth_repo
 from services.auth import (
     get_current_user,
     google_get_auth_url,
@@ -46,7 +46,7 @@ def tour_complete(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
-    user_repository.update_tour_seen(db, current_user.id)
+    auth_repo.update_tour_seen(db, current_user.id)
     return {"status": "ok"}
 
 

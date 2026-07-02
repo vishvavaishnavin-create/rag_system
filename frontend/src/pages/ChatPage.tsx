@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddTopicModal from '../components/AddTopicModal';
 import OnboardingTour from '../components/OnboardingTour';
+import PdfUploadPanel from '../components/PdfUploadPanel';
+import type { UploadStatus } from '../components/PdfUploadPanel';
 import { useAuth } from '../context/AuthContext';
 import { askQuestion } from '../services/chatService';
 import { getDocuments, uploadPDF } from '../services/documentService';
@@ -48,8 +50,6 @@ declare global {
   }
 }
 
-type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
-
 // ── Topic emoji map ───────────────────────────────────────────────────────────
 
 const TOPIC_EMOJIS: Record<string, string> = {
@@ -92,85 +92,6 @@ function groupSessions(sessions: Session[]): [string, Session[]][] {
   return Object.entries(groups).filter(([, items]) => items.length > 0);
 }
 
-// ── PDF Upload Panel (sidebar/top) ────────────────────────────────────────────
-
-interface PdfUploadPanelProps {
-  token: string;
-  documents: string[];
-  onUploadSuccess: (filename: string) => void;
-}
-
-function PdfUploadPanel({ token, documents, onUploadSuccess }: PdfUploadPanelProps): React.JSX.Element {
-  const [status, setStatus] = useState<UploadStatus>('idle');
-  const [message, setMessage] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFile: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setStatus('uploading');
-    setMessage('');
-    try {
-      const res = await uploadPDF(file, token);
-      setStatus('success');
-      setMessage(`"${res.filename}" — ${res.chunks_added} chunks added`);
-      onUploadSuccess(res.filename);
-    } catch (err: unknown) {
-      setStatus('error');
-      setMessage(err instanceof Error ? err.message : 'Upload failed.');
-    }
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
-  return (
-    <div
-      className={`border border-dashed rounded-xl p-4 mx-4 mt-4 transition-all duration-200
-        ${status === 'uploading'
-          ? 'border-indigo-500 bg-[#1e2130] animate-shimmer'
-          : 'border-gray-600 hover:border-indigo-500 bg-[#1e2130]'
-        }`}
-    >
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-3">
-          <label className="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg btn-press transition-colors">
-            {status === 'uploading' ? 'Uploading…' : '+ Upload PDF'}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf"
-              className="hidden"
-              onChange={handleFile}
-              disabled={status === 'uploading'}
-            />
-          </label>
-          {documents.length > 0 && (
-            <span className="text-xs bg-indigo-900/40 text-indigo-300 border border-indigo-700 px-2 py-1 rounded-full">
-              {documents.length} PDF{documents.length !== 1 ? 's' : ''} indexed
-            </span>
-          )}
-        </div>
-        {message && (
-          <p className={`text-xs flex items-center gap-1 ${status === 'success' ? 'text-green-400' : 'text-red-400'}`}>
-            <span className={status === 'success' ? 'animate-checkBounce inline-block' : 'animate-shake inline-block'}>
-              {status === 'success' ? '✓' : '✗'}
-            </span>
-            {message}
-          </p>
-        )}
-      </div>
-      {documents.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {documents.map((doc) => (
-            <span key={doc} className="text-xs text-gray-400 bg-[#0f1117] px-2 py-1 rounded hover:text-gray-200 transition-colors">
-              {doc}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── Main ChatPage ─────────────────────────────────────────────────────────────
 
 export default function ChatPage(): React.JSX.Element {
@@ -189,6 +110,9 @@ export default function ChatPage(): React.JSX.Element {
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editText, setEditText] = useState('');
 
   // Topics + modal
   const [topics, setTopics] = useState<TopicsAvailableResponse | null>(null);
@@ -318,7 +242,7 @@ export default function ChatPage(): React.JSX.Element {
   }
 
   // ── Messaging ────────────────────────────────────────────────────────────────
-  async function sendMessage(questionOverride?: string, forceSessionId?: string): Promise<void> {
+  async function sendMessage(questionOverride?: string, forceSessionId?: string, historyOverride?: Message[]): Promise<void> {
     const question = (questionOverride ?? input).trim();
     const sid = forceSessionId ?? currentSessionId;
     if (!question || loading || !sid) return;
@@ -327,19 +251,24 @@ export default function ChatPage(): React.JSX.Element {
     setError('');
     setLoading(true);
 
-    const historySnapshot: HistoryItem[] = messages.map((m) => ({
+    const baseMessages = historyOverride ?? messages;
+    const historySnapshot: HistoryItem[] = baseMessages.map((m) => ({
       role: m.role,
       content: m.content,
     }));
 
-    const isFirstMessage = messages.length === 0;
+    const isFirstMessage = baseMessages.length === 0;
     const userMsg: Message = {
       id: nextId.current++,
       role: 'user',
       content: question,
       timestamp: new Date().toLocaleTimeString(),
     };
-    setMessages((prev) => [...prev, userMsg]);
+    if (historyOverride) {
+      setMessages([...historyOverride, userMsg]);
+    } else {
+      setMessages((prev) => [...prev, userMsg]);
+    }
 
     if (isFirstMessage) {
       const title = question.slice(0, 40).trim();
@@ -488,6 +417,30 @@ export default function ChatPage(): React.JSX.Element {
     void fetchDocuments();
     void sendMessage(`What is this document about? (${filename})`);
   }
+
+  const handleCopy = async (id: number, content: string): Promise<void> => {
+    await navigator.clipboard.writeText(content);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleEditStart = (msg: Message): void => {
+    setEditingId(msg.id);
+    setEditText(msg.content);
+  };
+
+  const handleEditCancel = (): void => {
+    setEditingId(null);
+    setEditText('');
+  };
+
+  const handleEditSend = async (): Promise<void> => {
+    if (!editText.trim() || !editingId) return;
+    const editIndex = messages.findIndex((m) => m.id === editingId);
+    const newMessages = messages.slice(0, editIndex);
+    setEditingId(null);
+    await sendMessage(editText.trim(), undefined, newMessages);
+  };
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -825,28 +778,78 @@ export default function ChatPage(): React.JSX.Element {
               </div>
             )}
 
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${
-                  msg.role === 'user'
-                    ? 'justify-end animate-fadeInRight'
-                    : 'justify-start animate-fadeInLeft'
-                }`}
-              >
-                <div
-                  className={`max-w-[75%] rounded-2xl px-4 py-3 whitespace-pre-wrap text-sm
-                    transition-shadow duration-200 hover:shadow-lg
-                    ${msg.role === 'user'
-                      ? 'bg-indigo-600 text-white rounded-br-sm hover:shadow-indigo-900/40'
-                      : 'bg-[#1e2130] text-gray-100 rounded-bl-sm hover:shadow-black/30'
-                    }`}
-                >
-                  {msg.content}
-                  <div className="text-right text-xs opacity-40 mt-1">{msg.timestamp}</div>
+            {messages.map((msg) => {
+              if (msg.role === 'user') {
+                if (editingId === msg.id) {
+                  return (
+                    <div key={msg.id} className="flex justify-end animate-fadeInRight">
+                      <div className="w-[75%] bg-indigo-600 rounded-2xl px-4 py-3">
+                        <textarea
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void handleEditSend(); }
+                            if (e.key === 'Escape') handleEditCancel();
+                          }}
+                          autoFocus
+                          rows={3}
+                          className="bg-indigo-700 text-white border border-indigo-400 rounded-xl p-3 w-full min-w-[200px] resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm"
+                        />
+                        <div className="flex justify-end gap-2 mt-2">
+                          <button
+                            onClick={handleEditCancel}
+                            className="text-gray-300 hover:text-white text-sm px-3 py-1 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => void handleEditSend()}
+                            disabled={!editText.trim()}
+                            className="bg-indigo-500 hover:bg-indigo-400 disabled:opacity-40 text-white text-sm px-4 py-1 rounded-lg transition-colors"
+                          >
+                            Send ↵
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={msg.id} className="group flex justify-end animate-fadeInRight">
+                    <div className="relative max-w-[75%] bg-indigo-600 text-white rounded-2xl rounded-br-sm px-4 py-3 whitespace-pre-wrap text-sm transition-shadow duration-200 hover:shadow-lg hover:shadow-indigo-900/40">
+                      {msg.content}
+                      <div className="flex justify-between items-center mt-1">
+                        <button
+                          onClick={() => handleEditStart(msg)}
+                          title="Edit message"
+                          className="opacity-100 md:opacity-0 md:group-hover:opacity-100 text-gray-300 hover:text-white transition-all duration-200 text-xs leading-none p-0.5"
+                        >
+                          ✏️
+                        </button>
+                        <span className="text-xs opacity-40">{msg.timestamp}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <div key={msg.id} className="group flex justify-start animate-fadeInLeft">
+                  <div className="relative max-w-[75%] bg-[#1e2130] text-gray-100 rounded-2xl rounded-bl-sm px-4 py-3 whitespace-pre-wrap text-sm transition-shadow duration-200 hover:shadow-lg hover:shadow-black/30">
+                    {msg.content}
+                    <div className="flex justify-between items-center mt-1">
+                      <span className="text-xs opacity-40">{msg.timestamp}</span>
+                      <button
+                        onClick={() => void handleCopy(msg.id, msg.content)}
+                        title={copiedId === msg.id ? 'Copied!' : 'Copy'}
+                        className="opacity-100 md:opacity-0 md:group-hover:opacity-100 text-gray-500 hover:text-gray-300 transition-all duration-200 text-xs leading-none p-0.5"
+                      >
+                        {copiedId === msg.id ? '✅' : '📋'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {/* Typing indicator */}
             {loading && (

@@ -4,7 +4,7 @@ import tempfile
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 
 from database import User
-from models.document import DocumentsResponse, UploadResponse
+from models.documents import DocumentsResponse, UploadResponse
 from services import chat as chat_svc
 from services import documents as docs_svc
 from services.auth import get_current_user

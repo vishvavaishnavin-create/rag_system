@@ -49,21 +49,17 @@ package-lock.json
 .LSOverride
 ._*
 
-# ── VS Code ────────────────────────────────
+# ── IDE ────────────────────────────────────
 .vscode/
+.idea/
 *.code-workspace
 
-# ── Logs ───────────────────────────────────
+# ── Logs & temp ────────────────────────────
 *.log
 logs/
 *.tmp
 tmp/
 temp/
-
-# ── Uploads ────────────────────────────────
-uploads/
-*.pdf
-*.docx
 
 # ── Python cache ───────────────────────────
 .pytest_cache/
@@ -71,4 +67,9 @@ uploads/
 .ruff_cache/
 htmlcov/
 .coverage
+
+# ── AI Assistant Files ─────────────────────
 .claude/
+.cursor/
+.copilot/
+.aider/

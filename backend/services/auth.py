@@ -1,6 +1,6 @@
 """
 Auth service — registration, login, Google OAuth, and FastAPI auth dependencies.
-Calls user_repository for DB access; utils.jwt and utils.password for pure functions.
+Calls repository.auth for DB access; utils.jwt and utils.password for pure functions.
 """
 
 import urllib.parse
@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from app_config import settings
 from database import User, get_db
 from models.auth import TokenResponse, UserResponse
-from repository import user_repository
+from repository import auth as auth_repo
 from utils import jwt as jwt_utils
 from utils import password as pwd_utils
 
@@ -27,13 +27,13 @@ _GOOGLE_REDIRECT_URI = "http://localhost:8000/auth/google/callback"
 
 
 def create_admin_if_not_exists(db: Session) -> None:
-    existing = user_repository.find_by_username(db, settings.admin_username)
+    existing = auth_repo.find_by_username(db, settings.admin_username)
     if existing:
         if not existing.is_admin:
             existing.is_admin = True
             db.commit()
         return
-    user_repository.create_user(
+    auth_repo.create_user(
         db,
         username=settings.admin_username,
         email=settings.admin_email,
@@ -44,11 +44,11 @@ def create_admin_if_not_exists(db: Session) -> None:
 
 
 def register(db: Session, username: str, email: str, password: str) -> UserResponse:
-    if user_repository.find_by_username(db, username):
+    if auth_repo.find_by_username(db, username):
         raise HTTPException(status_code=400, detail="Username is already taken.")
-    if user_repository.find_by_email(db, email):
+    if auth_repo.find_by_email(db, email):
         raise HTTPException(status_code=400, detail="Email is already registered.")
-    user = user_repository.create_user(
+    user = auth_repo.create_user(
         db, username=username, email=email,
         hashed_password=pwd_utils.hash_password(password),
     )
@@ -59,7 +59,7 @@ def register(db: Session, username: str, email: str, password: str) -> UserRespo
 
 
 def login(db: Session, username: str, password: str) -> TokenResponse:
-    user = user_repository.find_by_username(db, username)
+    user = auth_repo.find_by_username(db, username)
     if not user or not pwd_utils.verify_password(password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -91,7 +91,7 @@ async def get_current_user(
     except JWTError:
         raise credentials_exc
 
-    user = user_repository.find_by_username(db, username)
+    user = auth_repo.find_by_username(db, username)
     if user is None:
         raise credentials_exc
     if not user.is_active:
@@ -145,5 +145,5 @@ async def google_handle_callback(code: str, db: Session) -> str:
         )
     google_user = info_resp.json()
 
-    user = user_repository.find_or_create_google_user(db, google_user)
+    user = auth_repo.find_or_create_google_user(db, google_user)
     return jwt_utils.create_access_token({"sub": user.username})

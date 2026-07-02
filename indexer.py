@@ -1,37 +1,21 @@
 import os
+import urllib.parse
+import urllib.request
+import json
+from dotenv import load_dotenv
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
-import urllib.request
-import json
+
+load_dotenv(os.path.expanduser("~/rag_system/.env"))
+
 from config import (
-    CHROMA_DB_DIR, COLLECTION_NAME, EMBEDDING_MODEL,
+    COLLECTION_NAME, EMBEDDING_MODEL,
     CHUNK_SIZE, CHUNK_OVERLAP, WIKIPEDIA_TOPICS,
 )
 
-def fetch_wikipedia_article(topic):
-    """Fetch Wikipedia article using Wikipedia REST API directly — no library needed."""
-    try:
-        url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{urllib.parse.quote(topic)}"
-        req = urllib.request.Request(url, headers={"User-Agent": "RAGSystem/1.0"})
-        with urllib.request.urlopen(req, timeout=10) as response:
-            data = json.loads(response.read().decode())
-            title = data.get("title", topic)
-            extract = data.get("extract", "")
-            if extract:
-                return Document(
-                    page_content=extract,
-                    metadata={"source": "wikipedia", "title": title}
-                )
-    except Exception as e:
-        print(f"  ⚠️  Could not fetch '{topic}': {e}")
-    return None
-
-import urllib.parse
-
 def fetch_wikipedia_full(topic):
-    """Fetch full Wikipedia article text using the Wikipedia API."""
     try:
         query = urllib.parse.quote(topic)
         url = (
@@ -50,7 +34,6 @@ def fetch_wikipedia_full(topic):
                 text = page.get("extract", "")
                 title = page.get("title", topic)
                 if text:
-                    # split into ~3000 char sections to get multiple docs per article
                     for i in range(0, min(len(text), 15000), 3000):
                         chunk = text[i:i+3000]
                         if chunk.strip():
@@ -60,8 +43,30 @@ def fetch_wikipedia_full(topic):
                             ))
             return docs
     except Exception as e:
-        print(f"  ⚠️  Could not fetch '{topic}': {e}")
+        print(f"  Could not fetch '{topic}': {e}")
     return []
+
+
+def get_chroma_client():
+    import chromadb
+    api_key  = os.getenv("CHROMA_API_KEY", "")
+    tenant   = os.getenv("CHROMA_TENANT", "")
+    database = os.getenv("CHROMA_DATABASE", "wikirag")
+
+    if api_key and tenant:
+        print("Using Chroma Cloud...")
+        client = chromadb.HttpClient(
+            ssl=True,
+            host="api.trychroma.com",
+            headers={"x-chroma-token": api_key},
+            tenant=tenant,
+            database=database
+        )
+        return client, None
+    else:
+        print("Using local ChromaDB...")
+        return None, "./chroma_db"
+
 
 def index_wikipedia_data():
     print("=" * 50)
@@ -76,35 +81,51 @@ def index_wikipedia_data():
     print(f"\nTotal documents loaded: {len(all_docs)}")
 
     if not all_docs:
-        print("❌ No documents loaded. Check your internet connection.")
+        print("No documents loaded.")
         return None
 
     print("\n" + "=" * 50)
     print("Step 2: Chunking documents...")
     print("=" * 50)
-    splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP
+    )
     chunks = splitter.split_documents(all_docs)
     print(f"Total chunks created: {len(chunks)}")
 
     print("\n" + "=" * 50)
     print("Step 3: Loading embedding model...")
     print("=" * 50)
-    print(f"Model: {EMBEDDING_MODEL}")
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
     print("Embedding model loaded.")
 
     print("\n" + "=" * 50)
-    print("Step 4: Embedding chunks and saving to ChromaDB...")
+    print("Step 4: Saving to ChromaDB...")
     print("=" * 50)
-    vectorstore = Chroma.from_documents(
-        documents=chunks,
-        embedding=embeddings,
-        collection_name=COLLECTION_NAME,
-        persist_directory=CHROMA_DB_DIR,
-    )
-    print(f"Saved {len(chunks)} chunks to ChromaDB at '{CHROMA_DB_DIR}'.")
-    print("Indexing complete.\n")
+
+    chroma_client, local_dir = get_chroma_client()
+
+    if chroma_client:
+        vectorstore = Chroma.from_documents(
+            documents=chunks,
+            embedding=embeddings,
+            collection_name=COLLECTION_NAME,
+            client=chroma_client
+        )
+        print(f"Saved {len(chunks)} chunks to Chroma Cloud!")
+    else:
+        vectorstore = Chroma.from_documents(
+            documents=chunks,
+            embedding=embeddings,
+            collection_name=COLLECTION_NAME,
+            persist_directory=local_dir
+        )
+        print(f"Saved {len(chunks)} chunks to local ChromaDB!")
+
+    print("Indexing complete.")
     return vectorstore
+
 
 if __name__ == "__main__":
     index_wikipedia_data()
