@@ -41,8 +41,6 @@ app.add_middleware(
         "http://localhost:5173",
         "https://rag-system-mu.vercel.app",
         "https://rag-system-git-main-cobuild-x.vercel.app",
-        "https://*.vercel.app",
-        "*"  # temporary for testing
     ],
     allow_credentials=True,
     allow_methods=["*"],
