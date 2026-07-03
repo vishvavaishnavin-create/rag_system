@@ -1,3 +1,4 @@
+import os
 """
 Auth service — registration, login, Google OAuth, and FastAPI auth dependencies.
 Calls repository.auth for DB access; utils.jwt and utils.password for pure functions.
