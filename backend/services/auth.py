@@ -23,7 +23,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 _GOOGLE_AUTH_BASE = "https://accounts.google.com/o/oauth2/auth"
 _GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 _GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
-_GOOGLE_REDIRECT_URI = os.getenv("BACKEND_URL", "http://localhost:8000") + "/auth/google/callback"
+_GOOGLE_REDIRECT_URI = "http://localhost:8000/auth/google/callback"
 
 
 def create_admin_if_not_exists(db: Session) -> None:
