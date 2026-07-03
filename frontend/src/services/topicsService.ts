@@ -1,7 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL || "${API_URL}"
+const API_URL = import.meta.env.VITE_API_URL || `${API_URL}`
 import type { AddTopicResponse, TopicsAvailableResponse } from '../types/topics';
 
-const BASE = '${API_URL}';
+const BASE = `${API_URL}`;
 
 export async function getTopics(token: string): Promise<TopicsAvailableResponse> {
   const res = await fetch(`${BASE}/topics/available`, {

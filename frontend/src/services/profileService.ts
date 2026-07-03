@@ -1,7 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL || "${API_URL}"
+const API_URL = import.meta.env.VITE_API_URL || `${API_URL}`
 import type { ActivityResponse, TopicsResponse, UserStats } from '../types/profile';
 
-const BASE = '${API_URL}';
+const BASE = `${API_URL}`;
 
 export async function getStats(token: string): Promise<UserStats> {
   const res = await fetch(`${BASE}/profile/stats`, {

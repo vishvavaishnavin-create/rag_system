@@ -1,7 +1,7 @@
-const API_URL = import.meta.env.VITE_API_URL || "${API_URL}"
+const API_URL = import.meta.env.VITE_API_URL || `${API_URL}`
 import type { SessionDetail, SessionsResponse } from '../types/history';
 
-const BASE = '${API_URL}';
+const BASE = `${API_URL}`;
 
 export async function getSessions(token: string): Promise<SessionsResponse> {
   const res = await fetch(`${BASE}/history/sessions`, {
