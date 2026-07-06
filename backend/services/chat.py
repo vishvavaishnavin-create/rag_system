@@ -154,8 +154,16 @@ def delete_by_uploaded_by(username: str) -> None:
 
 
 def _get_vectorstore() -> Chroma:
+    import chromadb
+    client = chromadb.HttpClient(
+        ssl=True,
+        host=settings.chroma_host,
+        headers={"x-chroma-token": settings.chroma_api_key},
+        tenant=settings.chroma_tenant,
+        database=settings.chroma_database,
+    )
     return Chroma(
         collection_name=settings.collection_name,
         embedding_function=get_embedding_model(),
-        persist_directory=settings.chroma_db_dir,
+        client=client,
     )
