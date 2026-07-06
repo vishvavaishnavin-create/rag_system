@@ -158,9 +158,9 @@ def _get_vectorstore() -> Chroma:
     client = chromadb.HttpClient(
         ssl=True,
         host=settings.chroma_host,
-        headers={"x-chroma-token": settings.chroma_api_key},
-        tenant=settings.chroma_tenant,
-        database=settings.chroma_database,
+        headers={"x-chroma-token": settings.chroma_api_key.strip()},
+        tenant=settings.chroma_tenant.strip(),
+        database=settings.chroma_database.strip(),
     )
     return Chroma(
         collection_name=settings.collection_name,
