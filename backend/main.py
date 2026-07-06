@@ -37,12 +37,8 @@ app = FastAPI(title="WikiRAG API", version="2.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "https://rag-system-mu.vercel.app",
-        "https://rag-system-git-main-cobuild-x.vercel.app",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
